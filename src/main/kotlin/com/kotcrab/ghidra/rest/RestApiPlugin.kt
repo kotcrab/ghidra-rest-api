@@ -95,7 +95,6 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
           }
         }
       }
-
     }
   }
 
