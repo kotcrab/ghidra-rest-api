@@ -1,0 +1,39 @@
+name: Publish ghidra-rest-api
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ghidra: [ '10.4' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+      - name: Setup Ghidra
+        uses: er28-0652/setup-ghidra@0.0.6
+        with:
+          version: ${{ matrix.ghidra }}
+      - name: Build Extension
+        run: |
+          chmod +x gradlew
+          ./gradlew buildExtension
+      - name: Upload artifact to release
+        uses: svenstaro/upload-release-action@2.3.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: ghidra-rest-api ${{ github.ref_name }}
+          file: dist/*ghidra-rest-api.zip
+          file_glob: true
+          body: See [CHANGES](https://github.com/kotcrab/ghidra-rest-api/blob/master/CHANGES.md) file before updating.
+          tag: ${{ github.ref }}
