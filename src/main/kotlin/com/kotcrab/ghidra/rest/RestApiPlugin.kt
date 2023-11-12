@@ -1,6 +1,8 @@
 package com.kotcrab.ghidra.rest
 
+import com.kotcrab.ghidra.rest.mapper.BookmarkMapper
 import com.kotcrab.ghidra.rest.mapper.DataTypeMapper
+import com.kotcrab.ghidra.rest.mapper.RelocationMapper
 import com.kotcrab.ghidra.rest.mapper.SymbolMapper
 import docking.ActionContext
 import docking.action.DockingAction
@@ -12,10 +14,12 @@ import ghidra.app.plugin.ProgramPlugin
 import ghidra.framework.plugintool.PluginInfo
 import ghidra.framework.plugintool.PluginTool
 import ghidra.framework.plugintool.util.PluginStatus
+import ghidra.program.model.listing.Program
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -40,22 +44,20 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
 
   private var server: ApplicationEngine? = null
 
+  private val bookmarkMapper = BookmarkMapper()
   private val dataTypeMapper = DataTypeMapper()
+  private val relocationMapper = RelocationMapper()
   private val symbolMapper = SymbolMapper()
 
   public override fun init() {
     super.init()
-    setupActions()
+    startServer = createAction("Start Rest API Server", ::startServer)
+    stopServer = createAction("Stop Rest API Server", ::stopServer)
   }
 
-  private fun setupActions() {
-    startServer = createAction("Start Rest API Server") {
-      server = createServer().also { it.start() }
-    }
-    stopServer = createAction("Stop Rest API Server") {
-      server?.stop()
-      server = null
-    }
+  override fun dispose() {
+    super.dispose()
+    stopServer()
   }
 
   private fun createAction(name: String, handler: () -> Unit): DockingAction {
@@ -70,6 +72,15 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
     return action
   }
 
+  private fun startServer() {
+    server = createServer().also { it.start() }
+  }
+
+  private fun stopServer() {
+    server?.stop()
+    server = null
+  }
+
   private fun createServer(): ApplicationEngine {
     return embeddedServer(CIO, port = 18489) {
       configureServer()
@@ -82,19 +93,41 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
     }
     routing {
       route("/v1") {
+        get("/bookmarks") {
+          withErrorLogging {
+            ensureProgramLoaded()
+            val bookmarks = bookmarkMapper.map(currentProgram.bookmarkManager)
+            call.respond(mapOf("bookmarks" to bookmarks))
+          }
+        }
+        get("/relocations") {
+          withErrorLogging {
+            ensureProgramLoaded()
+            val relocations = relocationMapper.map(currentProgram.relocationTable)
+            call.respond(mapOf("relocations" to relocations))
+          }
+        }
         get("/symbols") {
           withErrorLogging {
+            ensureProgramLoaded()
             val symbols = symbolMapper.map(currentProgram.symbolTable, currentProgram.listing)
             call.respond(mapOf("symbols" to symbols))
           }
         }
         get("/types") {
           withErrorLogging {
+            ensureProgramLoaded()
             val types = dataTypeMapper.map(currentProgram.dataTypeManager)
             call.respond(mapOf("types" to types))
           }
         }
       }
+    }
+  }
+
+  private fun ensureProgramLoaded() {
+    if (currentProgram == null) {
+      throw BadRequestException("No program is loaded")
     }
   }
 

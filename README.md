@@ -16,6 +16,8 @@ Then after opening program select `Start Rest API Server` from the `Tools` menu 
 
 The following endpoints are available:
 
+- `GET /v1/bookmarks` - return all bookmarks from the current `Program`.
+- `GET /v1/relocations` - return all relocations from the current `Program`.
 - `GET /v1/symbols` - return all symbols from the current `Program`.
 - `GET /v1/types` - return all types used in the current `Program`.
 
