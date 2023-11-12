@@ -1,0 +1,33 @@
+name: Build ghidra-rest-api
+
+on: [ push, pull_request, workflow_dispatch ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ghidra: [ '10.4' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+      - name: Setup Ghidra
+        uses: er28-0652/setup-ghidra@0.0.6
+        with:
+          version: ${{ matrix.ghidra }}
+      - name: Build Extension
+        run: |
+          chmod +x gradlew
+          ./gradlew buildExtension
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/*ghidra-rest-api.zip
+          name: ghidra-rest-api-snapshot-for-Ghidra-${{ matrix.ghidra }}
+          if-no-files-found: error
