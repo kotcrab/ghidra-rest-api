@@ -5,9 +5,12 @@ This extension adds read-only REST API to your Ghidra project.
 
 ## Installation
 
-This extension is under development, precompiled builds are not yet available.
-For now if you would like to use it you will need to build it on your own.
-Keep in mind there might be breaking changes.
+Download prebuilt package from the [Releases](https://github.com/kotcrab/ghidra-rest-api/releases) section. Select release which matches
+your Ghidra version. Then in main Ghidra window:
+1. Select `File -> Install Extensions`.
+2. Press the green plus button.
+3. Select downloaded ZIP.
+4. Restart Ghidra.
 
 ## Usage
 
