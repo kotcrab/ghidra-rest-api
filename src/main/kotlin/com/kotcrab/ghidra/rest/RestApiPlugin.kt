@@ -1,9 +1,6 @@
 package com.kotcrab.ghidra.rest
 
-import com.kotcrab.ghidra.rest.mapper.BookmarkMapper
-import com.kotcrab.ghidra.rest.mapper.DataTypeMapper
-import com.kotcrab.ghidra.rest.mapper.RelocationMapper
-import com.kotcrab.ghidra.rest.mapper.SymbolMapper
+import com.kotcrab.ghidra.rest.mapper.*
 import docking.ActionContext
 import docking.action.DockingAction
 import docking.action.MenuData
@@ -14,7 +11,6 @@ import ghidra.app.plugin.ProgramPlugin
 import ghidra.framework.plugintool.PluginInfo
 import ghidra.framework.plugintool.PluginTool
 import ghidra.framework.plugintool.util.PluginStatus
-import ghidra.program.model.listing.Program
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -36,9 +32,15 @@ import org.apache.logging.log4j.LogManager
 class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
   companion object {
     private const val PLUGIN_NAME = "RestApiPlugin"
+    private const val DEFAULT_PORT = 18489
     private val logger = LogManager.getLogger(RestApiPlugin::class.java)
   }
 
+  private object Env {
+    const val API_PORT = "GHIDRA_REST_API_PORT"
+  }
+
+  private var serverPort: Int = 0
   private var startServer: DockingAction? = null
   private var stopServer: DockingAction? = null
 
@@ -46,11 +48,13 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
 
   private val bookmarkMapper = BookmarkMapper()
   private val dataTypeMapper = DataTypeMapper()
+  private val memoryBlockMapper = MemoryBlockMapper()
   private val relocationMapper = RelocationMapper()
   private val symbolMapper = SymbolMapper()
 
   public override fun init() {
     super.init()
+    serverPort = System.getenv()[Env.API_PORT]?.toIntOrNull() ?: DEFAULT_PORT
     startServer = createAction("Start Rest API Server", ::startServer)
     stopServer = createAction("Stop Rest API Server", ::stopServer)
   }
@@ -82,7 +86,7 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
   }
 
   private fun createServer(): ApplicationEngine {
-    return embeddedServer(CIO, port = 18489) {
+    return embeddedServer(CIO, port = serverPort) {
       configureServer()
     }
   }
@@ -98,6 +102,23 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
             ensureProgramLoaded()
             val bookmarks = bookmarkMapper.map(currentProgram.bookmarkManager)
             call.respond(mapOf("bookmarks" to bookmarks))
+          }
+        }
+        get("/memory") {
+          withErrorLogging {
+            ensureProgramLoaded()
+            val address = call.request.queryParameters["address"] ?: throw BadRequestException("Address is required")
+            val length = call.request.queryParameters["length"]?.toIntOrNull() ?: throw BadRequestException("Length is required")
+            val result = ByteArray(length)
+            currentProgram.memory.getBytes(currentProgram.addressFactory.getAddress(address), result)
+            call.respond(mapOf("memory" to result))
+          }
+        }
+        get("/memory-blocks") {
+          withErrorLogging {
+            ensureProgramLoaded()
+            val memoryBlocks = memoryBlockMapper.map(currentProgram.memory)
+            call.respond(mapOf("memoryBlocks" to memoryBlocks))
           }
         }
         get("/relocations") {
