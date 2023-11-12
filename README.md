@@ -27,7 +27,7 @@ The following endpoints are available:
 - `GET /v1/symbols` - return all symbols from the current `Program`.
 - `GET /v1/types` - return all types used in the current `Program`.
 
-If you have other usecase which requires access to some other `Program` data then feel free to open issue describing what is needed.
+If you have some usecase which requires access to other `Program` data then feel free to open issue describing what is needed.
 
 ## Building
 
@@ -38,9 +38,9 @@ If you have other usecase which requires access to some other `Program` data the
 The following commands require `GHIDRA_USER_DIR` environment variable, it must be set to your Ghidra user
 directory, for example: `C:\Users\<user>\.ghidra\.ghidra_10.x_PUBLIC`.
 
-- `./gradlew ghidraInstall` - build and install into Ghidra user directory
-- `./gradlew ghidraInstallThenRun` - run `ghidraInstall` task then start Ghidra, useful for development
-- `./gradlew ghidraInstallThenDebug` - run `ghidraInstall` task then start Ghidra in debug mode, useful for development
+- `./gradlew ghidraInstall` - build and install into Ghidra user directory (contents of `$GHIDRA_USER_DIR/Extensions/ghidra-rest-api` will be overwritten).
+- `./gradlew ghidraInstallThenRun` - run `ghidraInstall` task then start Ghidra, useful for development.
+- `./gradlew ghidraInstallThenDebug` - run `ghidraInstall` task then start Ghidra in debug mode, useful for development.
 
 ## License
 
