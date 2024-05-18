@@ -24,6 +24,7 @@ The following endpoints are available:
 - `GET /v1/memory-blocks` - return all memory blocks from the current `Program`.
 - `GET /v1/memory?address={addressString}&length={length}` - return memory of the current `Program`.
 - `GET /v1/relocations` - return all relocations from the current `Program`.
+- `GET /v1/functions` - return all functions from the current `Program`.
 - `GET /v1/symbols` - return all symbols from the current `Program`.
 - `GET /v1/types` - return all types used in the current `Program`.
 

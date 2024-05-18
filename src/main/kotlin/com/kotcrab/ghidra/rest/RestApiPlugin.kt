@@ -48,6 +48,7 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
 
   private val bookmarkMapper = BookmarkMapper()
   private val dataTypeMapper = DataTypeMapper()
+  private val functionMapper = FunctionMapper()
   private val memoryBlockMapper = MemoryBlockMapper()
   private val relocationMapper = RelocationMapper()
   private val symbolMapper = SymbolMapper()
@@ -126,6 +127,13 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
             ensureProgramLoaded()
             val relocations = relocationMapper.map(currentProgram.relocationTable)
             call.respond(mapOf("relocations" to relocations))
+          }
+        }
+        get("/functions") {
+          withErrorLogging {
+            ensureProgramLoaded()
+            val functions = functionMapper.map(currentProgram.functionManager)
+            call.respond(mapOf("functions" to functions))
           }
         }
         get("/symbols") {

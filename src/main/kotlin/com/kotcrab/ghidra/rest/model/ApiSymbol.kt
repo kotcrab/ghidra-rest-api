@@ -1,7 +1,9 @@
 package com.kotcrab.ghidra.rest.model
 
+import java.math.BigInteger
+
 data class ApiSymbol(
-  val offset: Long,
+  val address: BigInteger,
   val name: String,
   val type: String,
   val global: Boolean,

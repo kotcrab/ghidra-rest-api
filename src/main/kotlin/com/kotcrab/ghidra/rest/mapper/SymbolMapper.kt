@@ -13,7 +13,7 @@ class SymbolMapper {
       .asSequence()
       .map {
         ApiSymbol(
-          offset = it.address.offset,
+          address = it.address.offsetAsBigInteger,
           name = it.name,
           type = it.symbolType.toString(),
           global = it.isGlobal,
