@@ -11,6 +11,7 @@ class MemoryBlockMapper {
           name = it.name,
           comment = it.comment,
           sourceName = it.sourceName,
+          addressSpaceName = it.addressRange.addressSpace.name,
           start = it.start.offsetAsBigInteger,
           end = it.end.offsetAsBigInteger,
           size = it.sizeAsBigInteger,

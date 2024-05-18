@@ -7,6 +7,7 @@ data class ApiMemoryBlock(
   val name: String,
   val comment: String,
   val sourceName: String,
+  val addressSpaceName: String,
   val start: BigInteger,
   val end: BigInteger,
   val size: BigInteger,
