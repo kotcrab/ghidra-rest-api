@@ -22,7 +22,7 @@ class DataTypeMapper {
           is Array -> ApiType.Kind.ARRAY to ApiType.ArrayProperties(type.dataType.pathName, type.elementLength, type.numElements)
           is Structure -> ApiType.Kind.STRUCTURE to ApiType.CompositeProperties(mapCompositeMembers(type))
           is Union -> ApiType.Kind.UNION to ApiType.CompositeProperties(mapCompositeMembers(type))
-          is FunctionDefinition -> ApiType.Kind.FUNCTION_DEFINITION to ApiType.FunctionDefinitionProperties(type.prototypeString)
+          is FunctionDefinition -> ApiType.Kind.FUNCTION_DEFINITION to mapFunctionDefinition(type)
           is AbstractIntegerDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("integer")
           is AbstractFloatDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("float")
           is AbstractStringDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("string")
@@ -43,6 +43,20 @@ class DataTypeMapper {
         )
       }
       .toList()
+  }
+
+  private fun mapFunctionDefinition(type: FunctionDefinition): ApiType.FunctionDefinitionProperties {
+    return ApiType.FunctionDefinitionProperties(
+      prototypeString = type.prototypeString,
+      returnTypePathName = type.returnType.pathName,
+      parameters = type.arguments.map {
+        ApiType.FunctionDefinitionProperties.Parameter(
+          ordinal = it.ordinal,
+          name = it.name,
+          dataTypePathName = it.dataType.pathName
+        )
+      }
+    )
   }
 
   private fun mapCompositeMembers(composite: Composite): List<ApiType.CompositeMember> {

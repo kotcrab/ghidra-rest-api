@@ -49,8 +49,16 @@ data class ApiType(
   )
 
   data class FunctionDefinitionProperties(
-    val prototypeString: String
-  )
+    val prototypeString: String,
+    val returnTypePathName: String,
+    val parameters: List<Parameter>,
+  ) {
+    data class Parameter(
+      val ordinal: Int,
+      val name: String,
+      val dataTypePathName: String,
+    )
+  }
 
   data class BuiltInProperties(
     val group: String

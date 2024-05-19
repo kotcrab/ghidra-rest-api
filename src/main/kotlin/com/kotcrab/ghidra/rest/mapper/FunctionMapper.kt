@@ -19,6 +19,7 @@ class FunctionMapper {
           parameters = function.parameters.map {
             ApiFunction.Parameter(
               ordinal = it.ordinal,
+              name = it.name,
               dataTypePathName = it.dataType.pathName
             )
           },

@@ -17,6 +17,7 @@ data class ApiFunction(
 
   data class Parameter(
     val ordinal: Int,
+    val name: String,
     val dataTypePathName: String,
   )
 }
