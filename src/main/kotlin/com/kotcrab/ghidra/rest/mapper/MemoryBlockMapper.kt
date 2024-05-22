@@ -9,7 +9,7 @@ class MemoryBlockMapper {
       .map {
         ApiMemoryBlock(
           name = it.name,
-          comment = it.comment,
+          comment = it.comment ?: "",
           sourceName = it.sourceName,
           addressSpaceName = it.addressRange.addressSpace.name,
           start = it.start.offsetAsBigInteger,
