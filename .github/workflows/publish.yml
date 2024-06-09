@@ -32,7 +32,7 @@ jobs:
           chmod +x gradlew
           ./gradlew buildExtension
       - name: Upload artifact to release
-        uses: svenstaro/upload-release-action@2.3.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ghidra-rest-api ${{ github.ref_name }}
