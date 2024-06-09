@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 // Builds a Ghidra Extension for a given Ghidra installation.
 //
 // An absolute path to the Ghidra installation directory must be supplied either by setting the
@@ -56,10 +58,8 @@ dependencies {
   implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 }
 
-compileKotlin {
-  kotlinOptions {
-    jvmTarget = "17"
-  }
+kotlin {
+  compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
 }
 
 def ghidraUserDir

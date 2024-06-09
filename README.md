@@ -37,7 +37,7 @@ If you have some usecase which requires access to other `Program` data then feel
 - `./gradlew buildExtension` - build extension, this will create a zip file in the `dist` directory.
 
 The following commands require `GHIDRA_USER_DIR` environment variable, it must be set to your Ghidra user
-directory, for example: `C:\Users\<user>\.ghidra\.ghidra_10.x_PUBLIC`.
+directory, for example: `C:\Users\<user>\AppData\Roaming\ghidra\ghidra_11.1_PUBLIC`.
 
 - `./gradlew ghidraInstall` - build and install into Ghidra user directory (contents of `$GHIDRA_USER_DIR/Extensions/ghidra-rest-api` will be overwritten).
 - `./gradlew ghidraInstallThenRun` - run `ghidraInstall` task then start Ghidra, useful for development.
