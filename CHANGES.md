@@ -3,6 +3,7 @@
 - Added `function.parameter[].name` field
 - Added `returnTypePathName` and `parameters` fields to the function prototype types
 - Memory block comment may be null (API will return it as empty string)
+- Updated internal dependencies
 
 #### Version 2
 

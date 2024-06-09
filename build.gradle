@@ -31,8 +31,8 @@ if (ghidraInstallDir) {
 //----------------------END "DO NOT MODIFY" SECTION-------------------------------
 
 buildscript {
-  ext.kotlinVersion = '1.9.20'
-  ext.ktorVersion = '2.3.5'
+  ext.kotlinVersion = '1.9.24'
+  ext.ktorVersion = '2.3.11'
   repositories {
     mavenCentral()
   }
