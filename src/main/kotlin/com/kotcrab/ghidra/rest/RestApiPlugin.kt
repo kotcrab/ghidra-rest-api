@@ -6,7 +6,7 @@ import docking.action.DockingAction
 import docking.action.MenuData
 import docking.tool.ToolConstants
 import ghidra.MiscellaneousPluginPackage
-import ghidra.app.plugin.PluginCategoryNames
+import ghidra.app.plugin.GenericPluginCategoryNames
 import ghidra.app.plugin.ProgramPlugin
 import ghidra.framework.plugintool.PluginInfo
 import ghidra.framework.plugintool.PluginTool
@@ -23,9 +23,9 @@ import org.apache.logging.log4j.LogManager
 
 @Suppress("unused")
 @PluginInfo(
-  status = PluginStatus.STABLE,
+  status = PluginStatus.RELEASED,
   packageName = MiscellaneousPluginPackage.NAME,
-  category = PluginCategoryNames.MISC,
+  category = GenericPluginCategoryNames.MISC,
   shortDescription = "Rest API Plugin",
   description = "This plugin adds read-only REST API to your Ghidra project."
 )
