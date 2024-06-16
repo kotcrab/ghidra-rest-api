@@ -1,3 +1,6 @@
+#### Version 2.1.1
+- Added build for Ghidra 11.1.1
+
 #### Version 2.1
 
 - Added `function.parameter[].name` field
