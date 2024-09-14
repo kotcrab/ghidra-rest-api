@@ -21,6 +21,7 @@ class SymbolMapper {
           pinned = it.isPinned,
           externalEntryPoint = it.isExternalEntryPoint,
           source = it.source.toString(),
+          namespace = it.parentNamespace.getName(true),
           preComment = listing.getComment(CodeUnit.PRE_COMMENT, it.address) ?: "",
           dataTypePathName = listing.getDataAt(it.address)?.dataType?.pathName
         )

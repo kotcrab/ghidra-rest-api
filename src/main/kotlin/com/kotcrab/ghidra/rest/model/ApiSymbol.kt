@@ -11,6 +11,7 @@ data class ApiSymbol(
   val pinned: Boolean,
   val externalEntryPoint: Boolean,
   val source: String,
+  val namespace: String,
   val preComment: String,
   val dataTypePathName: String?,
 )

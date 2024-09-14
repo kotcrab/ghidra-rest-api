@@ -18,15 +18,19 @@ After installing this extension enable the `RestApiPlugin` in the `Miscellaneous
 Then after opening program select `Start Rest API Server` from the `Tools` menu bar. The server will start on port `18489`.
 The port currently can only be changed by setting `GHIDRA_REST_API_PORT` environment variable.
 
-The following endpoints are available:
+The following endpoints are available, they all return data from the current `Program`:
 
-- `GET /v1/bookmarks` - return all bookmarks from the current `Program`.
-- `GET /v1/memory-blocks` - return all memory blocks from the current `Program`.
-- `GET /v1/memory?address={addressString}&length={length}` - return memory of the current `Program`.
-- `GET /v1/relocations` - return all relocations from the current `Program`.
-- `GET /v1/functions` - return all functions from the current `Program`.
-- `GET /v1/symbols` - return all symbols from the current `Program`.
-- `GET /v1/types` - return all types used in the current `Program`.
+- `GET /v1/bookmarks` - returns all bookmarks.
+- `GET /v1/memory-blocks` - returns all memory blocks.
+- `GET /v1/memory?address={addressString}&length={length}` - returns program memory. Note that the `addressString` can include the 
+  address space, e.g. `?address=segment_2::0x20` will return data from the `segment_2` space at offset 0x20.
+- `GET /v1/relocations` - returns all relocations.
+- `GET /v1/functions` - returns all functions.
+- `GET /v1/symbols` - returns all symbols.
+- `GET /v1/types` - returns all types used in program.
+
+To view the response model see classes [here](https://github.com/kotcrab/ghidra-rest-api/tree/master/src/main/kotlin/com/kotcrab/ghidra/rest/model).
+The fields are usually mapped 1:1 from Ghidra's data, for now you will need to refer to the Ghidra docs for detailed explanation about each field.  
 
 If you have some usecase which requires access to other `Program` data then feel free to open issue describing what is needed.
 
