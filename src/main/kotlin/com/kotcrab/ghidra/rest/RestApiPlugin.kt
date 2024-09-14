@@ -11,12 +11,14 @@ import ghidra.app.plugin.ProgramPlugin
 import ghidra.framework.plugintool.PluginInfo
 import ghidra.framework.plugintool.PluginTool
 import ghidra.framework.plugintool.util.PluginStatus
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.apache.logging.log4j.LogManager
@@ -96,63 +98,74 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
     install(ContentNegotiation) {
       jackson()
     }
-    routing {
-      route("/v1") {
-        get("/bookmarks") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val bookmarks = bookmarkMapper.map(currentProgram.bookmarkManager)
-            call.respond(mapOf("bookmarks" to bookmarks))
-          }
+    install(StatusPages) {
+      exception<BadRequestException> { call, cause ->
+        call.respond(HttpStatusCode.BadRequest, mapOf("message" to cause.message))
+      }
+      exception<Throwable> { call, cause ->
+        call.respond(HttpStatusCode.InternalServerError, mapOf("message" to cause.message))
+      }
+    }
+    installRouting()
+  }
+
+  private fun Application.installRouting() = routing {
+    route("/v1") {
+      get("/bookmarks") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val bookmarks = bookmarkMapper.map(currentProgram.bookmarkManager)
+          call.respond(mapOf("bookmarks" to bookmarks))
         }
-        get("/memory") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val address = call.request.queryParameters["address"] ?: throw BadRequestException("Address is required")
-            val length = call.request.queryParameters["length"]?.decodeIntOrThrow() ?: throw BadRequestException("Length is required")
-            if (length <= 0) {
-              throw BadRequestException("Length must be > 0")
-            }
-            val result = ByteArray(length)
-            val programAddress = currentProgram.addressFactory.getAddress(address) ?: throw BadRequestException("Invalid address")
-            currentProgram.memory.getBytes(programAddress, result)
-            call.respond(mapOf("memory" to result))
+      }
+      get("/memory") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val address = call.request.queryParameters["address"] ?: throw BadRequestException("Address is required")
+          val length = call.request.queryParameters["length"]?.decodeIntOrThrow() ?: throw BadRequestException("Length is required")
+          if (length <= 0) {
+            throw BadRequestException("Length must be > 0")
           }
+          val result = ByteArray(length)
+          val programAddress = currentProgram.addressFactory.getAddress(address) ?: throw BadRequestException("Invalid address")
+          runCatching { currentProgram.memory.getBytes(programAddress, result) }
+            .onFailure { throw BadRequestException("Can't read memory at $address", it) }
+          call.respond(mapOf("memory" to result))
         }
-        get("/memory-blocks") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val memoryBlocks = memoryBlockMapper.map(currentProgram.memory)
-            call.respond(mapOf("memoryBlocks" to memoryBlocks))
-          }
+      }
+      get("/memory-blocks") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val memoryBlocks = memoryBlockMapper.map(currentProgram.memory)
+          call.respond(mapOf("memoryBlocks" to memoryBlocks))
         }
-        get("/relocations") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val relocations = relocationMapper.map(currentProgram.relocationTable)
-            call.respond(mapOf("relocations" to relocations))
-          }
+      }
+      get("/relocations") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val relocations = relocationMapper.map(currentProgram.relocationTable)
+          call.respond(mapOf("relocations" to relocations))
         }
-        get("/functions") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val functions = functionMapper.map(currentProgram.functionManager)
-            call.respond(mapOf("functions" to functions))
-          }
+      }
+      get("/functions") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val functions = functionMapper.map(currentProgram.functionManager)
+          call.respond(mapOf("functions" to functions))
         }
-        get("/symbols") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val symbols = symbolMapper.map(currentProgram.symbolTable, currentProgram.listing)
-            call.respond(mapOf("symbols" to symbols))
-          }
+      }
+      get("/symbols") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val symbols = symbolMapper.map(currentProgram.symbolTable, currentProgram.listing)
+          call.respond(mapOf("symbols" to symbols))
         }
-        get("/types") {
-          withErrorLogging {
-            ensureProgramLoaded()
-            val types = dataTypeMapper.map(currentProgram.dataTypeManager)
-            call.respond(mapOf("types" to types))
-          }
+      }
+      get("/types") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val types = dataTypeMapper.map(currentProgram.dataTypeManager)
+          call.respond(mapOf("types" to types))
         }
       }
     }
