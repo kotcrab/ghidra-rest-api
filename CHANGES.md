@@ -2,6 +2,7 @@
 
 - Added `symbol.namespace` field
 - Added build for Ghidra 11.1.2
+- When reading memory `length` param can be specified as hex or octal string
 
 #### Version 2.1.1
 

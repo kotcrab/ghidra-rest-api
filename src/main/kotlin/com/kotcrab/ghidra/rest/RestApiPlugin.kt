@@ -109,9 +109,13 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
           withErrorLogging {
             ensureProgramLoaded()
             val address = call.request.queryParameters["address"] ?: throw BadRequestException("Address is required")
-            val length = call.request.queryParameters["length"]?.toIntOrNull() ?: throw BadRequestException("Length is required")
+            val length = call.request.queryParameters["length"]?.decodeIntOrThrow() ?: throw BadRequestException("Length is required")
+            if (length <= 0) {
+              throw BadRequestException("Length must be > 0")
+            }
             val result = ByteArray(length)
-            currentProgram.memory.getBytes(currentProgram.addressFactory.getAddress(address), result)
+            val programAddress = currentProgram.addressFactory.getAddress(address) ?: throw BadRequestException("Invalid address")
+            currentProgram.memory.getBytes(programAddress, result)
             call.respond(mapOf("memory" to result))
           }
         }
@@ -152,6 +156,12 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
         }
       }
     }
+  }
+
+  private fun String.decodeIntOrThrow(): Int {
+    return runCatching { Integer.decode(this) }
+      .getOrNull()
+      ?: throw BadRequestException("Invalid number format")
   }
 
   private fun ensureProgramLoaded() {
