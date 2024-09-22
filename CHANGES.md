@@ -1,3 +1,6 @@
+#### Version 2.2.1
+- Fixed `memoryBlock.sourceName` not defaulting to empty string when null
+
 #### Version 2.2
 
 - Added `symbol.namespace` field
