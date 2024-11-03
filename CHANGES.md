@@ -1,4 +1,10 @@
+#### Version 2.3
+- Added build for Ghidra 11.2
+- JVM 21 is now required
+- Updated internal dependencies 
+
 #### Version 2.2.1
+
 - Fixed `memoryBlock.sourceName` not defaulting to empty string when null
 
 #### Version 2.2
