@@ -27,6 +27,7 @@ class DataTypeMapper {
           is AbstractFloatDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("float")
           is AbstractStringDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("string")
           is Undefined -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("undefined")
+          is VoidDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("void")
           else -> ApiType.Kind.UNKNOWN to null
         }
         ApiType(

@@ -1,3 +1,6 @@
+#### Version 2.3.1
+- Fix `void` data type was not assigned to the `BUILT_IN` kind
+
 #### Version 2.3
 - Added build for Ghidra 11.2
 - JVM 21 is now required
