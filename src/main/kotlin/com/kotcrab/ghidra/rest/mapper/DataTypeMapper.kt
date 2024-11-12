@@ -6,7 +6,7 @@ import ghidra.program.model.data.Array
 import ghidra.program.model.data.Enum
 
 class DataTypeMapper {
-  fun map(dtm: DataTypeManager): List<ApiType> {
+  fun map(dtm: DataTypeManager, excludeUndefinedComponents: Boolean): List<ApiType> {
     return dtm.allDataTypes
       .asSequence()
       .filterNot { it is Pointer && it.dataType == null }
@@ -20,8 +20,8 @@ class DataTypeMapper {
           is TypeDef -> ApiType.Kind.TYPEDEF to ApiType.TypedefProperties(type.dataType.pathName, type.baseDataType.pathName)
           is Pointer -> ApiType.Kind.POINTER to ApiType.PointerProperties(type.dataType.pathName)
           is Array -> ApiType.Kind.ARRAY to ApiType.ArrayProperties(type.dataType.pathName, type.elementLength, type.numElements)
-          is Structure -> ApiType.Kind.STRUCTURE to ApiType.CompositeProperties(mapCompositeMembers(type))
-          is Union -> ApiType.Kind.UNION to ApiType.CompositeProperties(mapCompositeMembers(type))
+          is Structure -> ApiType.Kind.STRUCTURE to ApiType.CompositeProperties(mapCompositeMembers(type, excludeUndefinedComponents))
+          is Union -> ApiType.Kind.UNION to ApiType.CompositeProperties(mapCompositeMembers(type, excludeUndefinedComponents))
           is FunctionDefinition -> ApiType.Kind.FUNCTION_DEFINITION to mapFunctionDefinition(type)
           is AbstractIntegerDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("integer")
           is AbstractFloatDataType -> ApiType.Kind.BUILT_IN to ApiType.BuiltInProperties("float")
@@ -60,8 +60,12 @@ class DataTypeMapper {
     )
   }
 
-  private fun mapCompositeMembers(composite: Composite): List<ApiType.CompositeMember> {
-    return composite.definedComponents.map {
+  private fun mapCompositeMembers(composite: Composite, excludeUndefinedComponents: Boolean): List<ApiType.CompositeMember> {
+    val components = when {
+      excludeUndefinedComponents -> composite.definedComponents
+      else -> composite.components
+    }
+    return components.map {
       ApiType.CompositeMember(
         fieldName = it.fieldName ?: it.defaultFieldName,
         ordinal = it.ordinal,

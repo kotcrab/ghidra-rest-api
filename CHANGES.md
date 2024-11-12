@@ -1,10 +1,17 @@
+#### Version 2.4
+
+- Struct and union types now also include undefined components in the member list.
+  Use `?excludeUndefinedComponents=true` query param for the previous behavior
+
 #### Version 2.3.1
+
 - Fix `void` data type was not assigned to the `BUILT_IN` kind
 
 #### Version 2.3
+
 - Added build for Ghidra 11.2
 - JVM 21 is now required
-- Updated internal dependencies 
+- Updated internal dependencies
 
 #### Version 2.2.1
 

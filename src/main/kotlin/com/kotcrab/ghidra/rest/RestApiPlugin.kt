@@ -164,7 +164,8 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
       get("/types") {
         withErrorLogging {
           ensureProgramLoaded()
-          val types = dataTypeMapper.map(currentProgram.dataTypeManager)
+          val excludeUndefinedComponents = call.request.queryParameters["excludeUndefinedComponents"].toBoolean()
+          val types = dataTypeMapper.map(currentProgram.dataTypeManager, excludeUndefinedComponents)
           call.respond(mapOf("types" to types))
         }
       }
