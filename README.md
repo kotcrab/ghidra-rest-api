@@ -13,10 +13,19 @@ your Ghidra version. Then in main Ghidra window:
 3. Select downloaded ZIP.
 4. Restart Ghidra.
 
+The extension is now installed, but you still need to enable the plugin for the `CodeBrowser` tool.
+To do that:
+
+1. Open some file from your project (or press the `CodeBrowser` icon in the `Tool Chest`).
+2. Ghidra should prompt you about finding new plugins.
+3. Press `Yes` to configure them and enable the `RestApiPlugin`.
+
+If Ghidra doesn't prompt you just select `File -> Configure` from the `CodeBrowser` menu bar,
+then `Miscellaneous` and enable the `RestApiPlugin`.
+
 ## Usage
 
-After installing this extension enable the `RestApiPlugin` in the `Miscellaneous` plugins configuration window.
-Then after opening program select `Start Rest API Server` from the `Tools` menu bar. The server will start on port `18489`.
+After enabling the plugin you can select `Start Rest API Server` from the `Tools` menu bar. The server will start on port `18489`.
 The port currently can only be changed by setting `GHIDRA_REST_API_PORT` environment variable.
 
 ### Endpoints
