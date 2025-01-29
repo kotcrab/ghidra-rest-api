@@ -48,6 +48,17 @@ The fields are usually mapped 1:1 from Ghidra's data, for now you will need to r
 
 If you have some usecase which requires access to other `Program` data then feel free to open issue describing what is needed.
 
+## Use cases
+
+Here are some use cases where and how this plugin is used:
+
+- PPSSPP's struct viewer debugging tool uses symbols and types fetched through this plugin to visualize in real-time objects data in game memory.
+  This can be very helpful when reverse engineering unknown types by combining static and dynamic analysis. This is how it looks:
+  ![image](https://github.com/user-attachments/assets/3f8e962d-e1b5-4d07-82c3-6ff96cf3ace4)
+- This plugin is used in the [mist](https://github.com/kotcrab/mist) symbolic execution engine to get symbol and types data from the
+  executable. Thanks to it the code is simpler as there is no need to reimplement analysis Ghidra has already done, it also allows for quite 
+  unique workflow where types from Ghidra can be directly referenced when writing symbolic test cases.
+
 ## Building
 
 `GHIDRA_INSTALL_DIR` environment variable must be set to Ghidra root installation directory.
