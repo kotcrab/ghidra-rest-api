@@ -1,5 +1,6 @@
 #### Version 2.4
 
+- Added build for Ghidra 11.3
 - Struct and union types now also include undefined components in the member list.
   Use `?excludeUndefinedComponents=true` query param for the previous behavior
 
