@@ -37,6 +37,9 @@ The following endpoints are available, they all return data from the current `Pr
 - `GET /v1/memory?address={addressString}&length={length}` - returns program memory.
   - Note that the `addressString` can include the address space, e.g. `?address=segment_2::0x20` will
     return data from the `segment_2` space at offset 0x20.
+  - Returned data might be smaller than the requested length if it exceeds available memory.
+  - The data is returned in JSON with Base64 encoding, you can specify query parameter `?format=raw` to
+    get the bytes directly without any encoding.
 - `GET /v1/relocations` - returns all relocations.
 - `GET /v1/functions` - returns all functions.
 - `GET /v1/symbols` - returns all symbols.

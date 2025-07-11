@@ -121,16 +121,28 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
       get("/memory") {
         withErrorLogging {
           ensureProgramLoaded()
-          val address = call.request.queryParameters["address"] ?: throw BadRequestException("Address is required")
-          val length = call.request.queryParameters["length"]?.decodeIntOrThrow() ?: throw BadRequestException("Length is required")
+          val address = call.request.queryParameters["address"]
+            ?: throw BadRequestException("Address is required")
+          val length = call.request.queryParameters["length"]?.decodeIntOrThrow()
+            ?: throw BadRequestException("Length is required")
+          val rawFormat = call.request.queryParameters["format"]?.equals("raw", ignoreCase = true) ?: false
           if (length <= 0) {
             throw BadRequestException("Length must be > 0")
           }
-          val result = ByteArray(length)
-          val programAddress = currentProgram.addressFactory.getAddress(address) ?: throw BadRequestException("Invalid address")
-          runCatching { currentProgram.memory.getBytes(programAddress, result) }
+          val programAddress = currentProgram.addressFactory.getAddress(address)
+            ?: throw BadRequestException("Invalid address")
+          val result = runCatching {
+            val result = ByteArray(length)
+            val readBytes = currentProgram.memory.getBytes(programAddress, result)
+            result.sliceArray(0..<readBytes)
+          }
             .onFailure { throw BadRequestException("Can't read memory at $address", it) }
-          call.respond(mapOf("memory" to result))
+            .getOrThrow()
+          if (rawFormat) {
+            call.respondBytes(result, ContentType.Application.OctetStream)
+          } else {
+            call.respond(mapOf("memory" to result))
+          }
         }
       }
       get("/memory-blocks") {
