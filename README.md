@@ -37,6 +37,8 @@ The following endpoints are available, they all return data from the current `Pr
 - `GET /v1/memory?address={addressString}&length={length}` - returns program memory.
   - Note that the `addressString` can include the address space, e.g. `?address=segment_2::0x20` will
     return data from the `segment_2` space at offset 0x20.
+  - The address string is parsed as a hex number, even if the `0x` prefix is not specified.
+  - Length is parsed as a decimal number by default, but you can specify `0x` to parse it as a hex number.
   - Returned data might be smaller than the requested length if it exceeds available memory.
   - The data is returned in JSON with Base64 encoding, you can specify query parameter `?format=raw` to
     get the bytes directly without any encoding.
