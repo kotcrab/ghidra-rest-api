@@ -4,6 +4,7 @@ import java.math.BigInteger
 
 data class ApiSymbol(
   val address: BigInteger,
+  val addressSpaceId: Int,
   val name: String,
   val type: String,
   val global: Boolean,

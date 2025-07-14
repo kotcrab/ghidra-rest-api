@@ -25,10 +25,13 @@ class FunctionMapper {
           },
           hasVarArgs = function.hasVarArgs(),
           entryPoint = function.entryPoint.offsetAsBigInteger,
+          entryPointSpaceId = function.entryPoint.addressSpace.spaceID,
           addressRanges = function.body.addressRanges.map {
             ApiFunction.AddressRange(
               minAddress = it.minAddress.offsetAsBigInteger,
-              maxAddress = it.maxAddress.offsetAsBigInteger
+              minAddressSpaceId = it.minAddress.addressSpace.spaceID,
+              maxAddress = it.maxAddress.offsetAsBigInteger,
+              maxAddressSpaceId = it.maxAddress.addressSpace.spaceID,
             )
           },
         )

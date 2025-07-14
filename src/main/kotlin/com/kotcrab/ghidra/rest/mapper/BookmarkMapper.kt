@@ -10,6 +10,7 @@ class BookmarkMapper {
         ApiBookmark(
           id = it.id,
           address = it.address.offsetAsBigInteger,
+          addressSpaceId = it.address.addressSpace.spaceID,
           type = it.typeString,
           category = it.category,
           comment = it.comment,

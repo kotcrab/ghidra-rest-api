@@ -48,6 +48,7 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
 
   private var server: ApplicationEngine? = null
 
+  private val addressSpaceMapper = AddressSpaceMapper()
   private val bookmarkMapper = BookmarkMapper()
   private val dataTypeMapper = DataTypeMapper()
   private val functionMapper = FunctionMapper()
@@ -111,6 +112,13 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
 
   private fun Application.installRouting() = routing {
     route("/v1") {
+      get("/address-spaces") {
+        withErrorLogging {
+          ensureProgramLoaded()
+          val addressSpaces = addressSpaceMapper.map(currentProgram.addressFactory)
+          call.respond(mapOf("addressSpaces" to addressSpaces))
+        }
+      }
       get("/bookmarks") {
         withErrorLogging {
           ensureProgramLoaded()

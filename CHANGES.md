@@ -1,3 +1,9 @@
+#### Version 2.6
+
+- Added `GET /v1/address-spaces` endpoint.
+- Added address space ID for all endpoints exposing program addresses.
+- Added `memoryBlock[].artificial` field.
+
 #### Version 2.5
 
 - Fixed program memory read not checking size of the actually read memory.

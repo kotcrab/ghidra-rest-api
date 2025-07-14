@@ -12,6 +12,7 @@ class MemoryBlockMapper {
           comment = it.comment ?: "",
           sourceName = it.sourceName ?: "",
           addressSpaceName = it.addressRange.addressSpace.name,
+          addressSpaceId = it.addressRange.addressSpace.spaceID,
           start = it.start.offsetAsBigInteger,
           end = it.end.offsetAsBigInteger,
           size = it.sizeAsBigInteger,
@@ -24,6 +25,7 @@ class MemoryBlockMapper {
           mapped = it.isMapped,
           external = it.isExternalBlock,
           loaded = it.isLoaded,
+          artificial = it.isArtificial,
           type = it.type,
         )
       }

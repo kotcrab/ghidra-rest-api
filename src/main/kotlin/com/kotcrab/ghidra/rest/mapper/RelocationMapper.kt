@@ -9,6 +9,7 @@ class RelocationMapper {
       .map {
         ApiRelocation(
           address = it.address.offsetAsBigInteger,
+          addressSpaceId = it.address.addressSpace.spaceID,
           status = it.status,
           type = it.type,
           values = it.values,

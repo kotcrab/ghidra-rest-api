@@ -8,6 +8,7 @@ data class ApiMemoryBlock(
   val comment: String,
   val sourceName: String,
   val addressSpaceName: String,
+  val addressSpaceId: Int,
   val start: BigInteger,
   val end: BigInteger,
   val size: BigInteger,
@@ -20,5 +21,6 @@ data class ApiMemoryBlock(
   val mapped: Boolean,
   val external: Boolean,
   val loaded: Boolean,
+  val artificial: Boolean,
   val type: MemoryBlockType,
 )

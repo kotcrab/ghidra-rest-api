@@ -14,6 +14,7 @@ class SymbolMapper {
       .map {
         ApiSymbol(
           address = it.address.offsetAsBigInteger,
+          addressSpaceId = it.address.addressSpace.spaceID,
           name = it.name,
           type = it.symbolType.toString(),
           global = it.isGlobal,

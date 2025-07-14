@@ -8,11 +8,14 @@ data class ApiFunction(
   val parameters: List<Parameter>,
   val hasVarArgs: Boolean,
   val entryPoint: BigInteger,
+  val entryPointSpaceId: Int,
   val addressRanges: List<AddressRange>,
 ) {
   data class AddressRange(
     val minAddress: BigInteger,
+    val minAddressSpaceId: Int,
     val maxAddress: BigInteger,
+    val maxAddressSpaceId: Int,
   )
 
   data class Parameter(
