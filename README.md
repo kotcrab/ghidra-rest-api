@@ -69,6 +69,7 @@ Here are some use cases where and how this plugin is used:
 
 ## Clients
 
+- [ghidra-rest-client-python](https://github.com/Nemoumbra/ghidra-rest-client-python) - Python library providing client.
 - For Kotlin/Java see example client implementation in the [mist](https://github.com/kotcrab/mist/blob/cd58a2bab69410516c1e450035120b6caa01e190/ghidra-client/src/main/kotlin/mist/ghidra/GhidraClient.kt) project.
 
 ## Building
