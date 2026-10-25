@@ -31,8 +31,8 @@ if (ghidraInstallDir) {
 //----------------------END "DO NOT MODIFY" SECTION-------------------------------
 
 buildscript {
-  ext.kotlinVersion = '2.0.21'
-  ext.ktorVersion = '2.3.12'
+  ext.kotlinVersion = '2.4.21'
+  ext.ktorVersion = '3.6.0'
   repositories {
     mavenCentral()
   }
@@ -46,7 +46,7 @@ repositories {
   mavenCentral()
 }
 
-apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
@@ -54,11 +54,11 @@ dependencies {
   implementation "io.ktor:ktor-server-cio:$ktorVersion"
   implementation "io.ktor:ktor-server-content-negotiation:$ktorVersion"
   implementation "io.ktor:ktor-server-status-pages:$ktorVersion"
-  implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+  implementation "io.ktor:ktor-serialization-jackson:$ktorVersion"
 }
 
 kotlin {
-  jvmToolchain(21)
+  jvmToolchain(25)
 }
 
 def ghidraUserDir
@@ -69,7 +69,7 @@ if (System.env.GHIDRA_USER_DIR) {
   ghidraUserDir = project.getProperty("GHIDRA_USER_DIR")
 }
 
-task checkCanGhidraInstall {
+tasks.register('checkCanGhidraInstall') {
   dependsOn 'buildExtension'
   doFirst {
     if (!ghidraUserDir) {
@@ -78,7 +78,7 @@ task checkCanGhidraInstall {
   }
 }
 
-task ghidraInstall(type: Copy) {
+tasks.register('ghidraInstall', Copy) {
   dependsOn 'checkCanGhidraInstall'
   from {
     zipTree(new File("$projectDir/dist/").listFiles().sort { it.lastModified() }.last())
@@ -86,32 +86,25 @@ task ghidraInstall(type: Copy) {
   into ghidraUserDir + '/Extensions'
 }
 
-task ghidraInstallThenRun {
+tasks.register('ghidraInstallThenRun', Exec) {
   dependsOn 'ghidraInstall'
-  doLast {
-    exec {
-      if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', 'ghidraRun.bat'
-      } else {
-        commandLine './ghidraRun'
-      }
-      workingDir ghidraInstallDir
-      ignoreExitValue true
-    }
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    commandLine 'cmd', '/c', 'ghidraRun.bat'
+  } else {
+    commandLine './ghidraRun'
   }
+  workingDir ghidraInstallDir
+  ignoreExitValue true
 }
 
-task ghidraInstallThenDebug {
+tasks.register('ghidraInstallThenDebug', Exec) {
   dependsOn 'ghidraInstall'
-  doLast {
-    exec {
-      if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', 'support\\ghidraDebug.bat'
-      } else {
-        commandLine './support/ghidraDebug'
-      }
-      workingDir ghidraInstallDir
-      ignoreExitValue true
-    }
+
+  if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+    commandLine 'cmd', '/c', 'support\\ghidraDebug.bat'
+  } else {
+    commandLine './support/ghidraDebug'
   }
+  workingDir ghidraInstallDir
+  ignoreExitValue true
 }

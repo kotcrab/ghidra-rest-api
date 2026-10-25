@@ -1,3 +1,7 @@
+#### Version 2.7
+- Updated to Ghidra 12.2.
+- JVM 25 is now required.
+
 #### Version 2.6
 
 - Added `GET /v1/address-spaces` endpoint.

@@ -1,11 +1,13 @@
 package com.kotcrab.ghidra.rest.mapper
 
 import com.kotcrab.ghidra.rest.model.ApiSymbol
-import ghidra.program.model.listing.CodeUnit
+import ghidra.program.model.listing.CommentType
 import ghidra.program.model.listing.Listing
 import ghidra.program.model.symbol.SymbolTable
 import kotlin.collections.List
 import kotlin.sequences.asSequence
+import kotlin.sequences.map
+import kotlin.sequences.toList
 
 class SymbolMapper {
   fun map(symbolTable: SymbolTable, listing: Listing): List<ApiSymbol> {
@@ -23,7 +25,7 @@ class SymbolMapper {
           externalEntryPoint = it.isExternalEntryPoint,
           source = it.source.toString(),
           namespace = it.parentNamespace.getName(true),
-          preComment = listing.getComment(CodeUnit.PRE_COMMENT, it.address) ?: "",
+          preComment = listing.getComment(CommentType.PRE, it.address) ?: "",
           dataTypePathName = listing.getDataAt(it.address)?.dataType?.pathName
         )
       }

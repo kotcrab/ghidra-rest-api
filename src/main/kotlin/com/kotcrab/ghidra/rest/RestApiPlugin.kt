@@ -46,7 +46,7 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
   private var startServer: DockingAction? = null
   private var stopServer: DockingAction? = null
 
-  private var server: ApplicationEngine? = null
+  private var server: EmbeddedServer<CIOApplicationEngine, CIOApplicationEngine.Configuration>? = null
 
   private val addressSpaceMapper = AddressSpaceMapper()
   private val bookmarkMapper = BookmarkMapper()
@@ -89,7 +89,7 @@ class RestApiPlugin(tool: PluginTool) : ProgramPlugin(tool) {
     server = null
   }
 
-  private fun createServer(): ApplicationEngine {
+  private fun createServer(): EmbeddedServer<CIOApplicationEngine, CIOApplicationEngine.Configuration> {
     return embeddedServer(CIO, port = serverPort) {
       configureServer()
     }
